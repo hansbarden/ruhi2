@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#150a10">
 <meta name="description" content="A little page made for Ruhi.">
 
 <title>RUHI — a little place made for you</title>
@@ -33,6 +34,13 @@
   html,body{
     margin:0;
     padding:0;
+    height:100%;
+  }
+
+  html{
+    scroll-behavior:smooth;
+    /* Full-screen story: one section = one snapped view */
+    scroll-snap-type:y mandatory;
   }
 
   body{
@@ -41,7 +49,18 @@
     font-family:'Manrope',sans-serif;
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
-    scroll-behavior:smooth;
+    /* smoother momentum + snap on iOS */
+    -webkit-overflow-scrolling:touch;
+  }
+
+  button,a{
+    /* remove the gray flash on tap for a more native feel */
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  button{
+    /* skip the ~300ms tap delay on mobile browsers */
+    touch-action:manipulation;
   }
 
   ::selection{
@@ -263,6 +282,13 @@
     opacity:1;
   }
 
+  /*
+    Static nav bar — always visible, labels always readable
+    (no hover dependency, which doesn't work on touch).
+    Top pill on desktop; bottom bar on mobile, sized for
+    thumbs and padded for notches/home-indicator safe areas.
+  */
+
   nav.floatnav{
     position:fixed;
     top:18px;
@@ -274,7 +300,7 @@
     display:flex;
     gap:4px;
 
-    background:rgba(21,10,16,0.7);
+    background:rgba(21,10,16,0.72);
 
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
@@ -288,6 +314,9 @@
     overflow-x:auto;
 
     scrollbar-width:none;
+
+    padding-left:max(6px, env(safe-area-inset-left));
+    padding-right:max(6px, env(safe-area-inset-right));
   }
 
   nav.floatnav::-webkit-scrollbar{
@@ -297,14 +326,21 @@
   nav.floatnav a{
     white-space:nowrap;
 
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
     color:var(--text-muted);
     text-decoration:none;
 
     font-size:13px;
     font-weight:600;
 
-    padding:8px 14px;
+    padding:10px 14px;
     border-radius:100px;
+
+    /* comfortable tap target on touch devices */
+    min-height:40px;
 
     transition:
       color .2s ease,
@@ -317,14 +353,50 @@
     background:var(--rose-soft);
   }
 
+  @media (max-width:560px){
+
+    nav.floatnav{
+      top:auto;
+      bottom:14px;
+
+      max-width:96vw;
+
+      /* keep the bar clear of the home-indicator on iOS */
+      padding-bottom:max(6px, env(safe-area-inset-bottom));
+    }
+
+    /* shorten labels on small screens so the bar fits
+       without needing to scroll sideways to find a tab */
+    nav.floatnav a{
+      font-size:12px;
+      padding:9px 11px;
+    }
+
+  }
+
   section{
     position:relative;
     z-index:1;
 
-    padding:120px 20px 100px;
+    padding:100px 20px;
 
     max-width:840px;
     margin:0 auto;
+
+    /* Full-screen story: each section fills one view and snaps.
+       100dvh accounts for mobile browser chrome (address bar)
+       so sections don't get cut off / overshoot on phones;
+       vh is the fallback for older browsers. */
+    min-height:100vh;
+    min-height:100dvh;
+    box-sizing:border-box;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
   }
 
   section.wide{
@@ -337,7 +409,6 @@
   ========================================================= */
 
   #home{
-    padding-top:150px;
     text-align:center;
   }
 
@@ -884,6 +955,12 @@
 
     position:relative;
 
+    /* Section is full-screen now; let the letter itself
+       scroll internally if it's taller than the viewport
+       rather than pushing the page off the snap grid. */
+    max-height:76vh;
+    overflow-y:auto;
+
     background-image:
       repeating-linear-gradient(
         var(--cream) 0px,
@@ -928,6 +1005,7 @@
 
   #final{
     min-height:100vh;
+    min-height:100dvh;
 
     display:flex;
     align-items:center;
@@ -1065,7 +1143,7 @@
 
     font-size:12px;
 
-    padding:30px 20px 60px;
+    padding:30px 20px calc(60px + env(safe-area-inset-bottom));
 
     opacity:.6;
   }
@@ -1078,7 +1156,7 @@
   @media (max-width:560px){
 
     section{
-      padding:100px 18px 80px;
+      padding:100px 18px 120px;
     }
 
     .why-card:nth-child(even),
@@ -1137,19 +1215,19 @@
 
   <nav class="floatnav" id="floatnav">
 
-    <a href="#home">Home</a>
+    <a href="#home" data-label="Home" title="Home">Home</a>
 
-    <a href="#you">You</a>
+    <a href="#you" data-label="You" title="You">You</a>
 
-    <a href="#why">Why I Love You</a>
+    <a href="#why" data-label="Why I Love You" title="Why I Love You">Why I Love You</a>
 
-    <a href="#energy">Our Energy</a>
+    <a href="#energy" data-label="Our Energy" title="Our Energy">Our Energy</a>
 
-    <a href="#rizz">Rizz Dept.</a>
+    <a href="#rizz" data-label="Rizz Dept." title="Rizz Dept.">Rizz Dept.</a>
 
-    <a href="#letter">A Little Letter</a>
+    <a href="#letter" data-label="A Little Letter" title="A Little Letter">A Little Letter</a>
 
-    <a href="#final">One Last Thing</a>
+    <a href="#final" data-label="One Last Thing" title="One Last Thing">One Last Thing</a>
 
   </nav>
 
