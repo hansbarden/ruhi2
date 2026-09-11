@@ -1,9 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="A little page made for Ruhi.">
 
 <title>RUHI — a little place made for you</title>
 
@@ -627,7 +627,8 @@
   }
 
   .why-card.open p{
-    max-height:200px;
+    /* was 200px — bumped so longer entries never clip on narrow screens */
+    max-height:260px;
     opacity:1;
     margin-top:10px;
   }
@@ -910,6 +911,10 @@
     padding-left:14px;
   }
 
+  .letter-card p:last-of-type{
+    margin-bottom:0;
+  }
+
   .letter-ending{
     font-style:italic;
     color:#5a3d33;
@@ -1093,10 +1098,10 @@
 <body>
 
 <!-- =========================================================
-     FLOATING PARTICLES
+     FLOATING PARTICLES (decorative — hidden from assistive tech)
 ========================================================= -->
 
-<div class="particle-field" id="particleField"></div>
+<div class="particle-field" id="particleField" aria-hidden="true"></div>
 
 
 <!-- =========================================================
@@ -1107,11 +1112,11 @@
 
   <div class="intro-inner">
 
-    <div class="intro-lines" id="introLines"></div>
+    <div class="intro-lines" id="introLines" aria-live="polite"></div>
 
     <button class="intro-btn" id="introBtn">
       Open my heart
-      <span class="intro-heart">❤️</span>
+      <span class="intro-heart" aria-hidden="true">❤️</span>
     </button>
 
   </div>
@@ -2255,7 +2260,8 @@
     .addEventListener("click", function(){
 
       /*
-        Reset final animation first.
+        Reset the visible state right away so the
+        text/photo hide instantly...
       */
 
       document
@@ -2272,9 +2278,6 @@
         });
 
 
-      finalTriggered = false;
-
-
       /*
         Go back to the top.
       */
@@ -2286,8 +2289,13 @@
 
 
       /*
-        Small delay before allowing
-        the final sequence to trigger again.
+        ...but only allow the sequence to
+        re-trigger AFTER the scroll has had time
+        to carry #final out of view. Fixed: this
+        used to also reset finalTriggered
+        immediately, which could let the observer
+        re-fire the sequence before you'd actually
+        scrolled away.
       */
 
       setTimeout(function(){
@@ -2304,30 +2312,3 @@
 
 </body>
 </html>
-```
-
-### Your photo setup is now
-
-```text
-📁 your-project/
-│
-├── ruhi.html
-│
-└── 📁 ruhi/
-    ├── p1.jpg   ← Hero
-    ├── p2.jpg   ← Story
-    ├── p3.jpg   ← Story
-    ├── p4.jpg   ← Story
-    ├── p5.jpg   ← Story
-    ├── p6.jpg   ← Story
-    ├── p7.jpg   ← Story
-    └── p8.jpg   ← ❤️ FINAL PHOTO
-```
-
-The important fix is that the final section now has:
-
-```html
-<img src="ruhi/p8.jpg" alt="Pi — my Ruhi" loading="lazy">
-```
-
-And when Pi reaches the last section, **p8 appears with a soft fade, glow, and slow cinematic zoom**. ❤️
